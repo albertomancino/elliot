@@ -11,7 +11,7 @@ import tensorflow as tf
 import numpy as np
 from tensorflow import keras
 
-
+#
 class VBPRModel(keras.Model):
     def __init__(self, factors=200, factors_d=20,
                  learning_rate=0.001,
