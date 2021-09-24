@@ -11,7 +11,7 @@ import tensorflow as tf
 import numpy as np
 from tensorflow import keras
 
-#
+
 class VBPRModel(keras.Model):
     def __init__(self, factors=200, factors_d=20,
                  learning_rate=0.001,
@@ -37,15 +37,21 @@ class VBPRModel(keras.Model):
 
         self.initializer = tf.initializers.GlorotUniform()
 
-        self.Bi = tf.Variable(tf.zeros(self._num_items), name='Bi', dtype=tf.float32)
+        # users and items embeddings
         self.Gu = tf.Variable(self.initializer(shape=[self._num_users, self._factors]), name='Gu', dtype=tf.float32)
         self.Gi = tf.Variable(self.initializer(shape=[self._num_items, self._factors]), name='Gi', dtype=tf.float32)
 
+        # items and visual bias
+        self.Bi = tf.Variable(tf.zeros(self._num_items), name='Bi', dtype=tf.float32)
         self.Bp = tf.Variable(
             self.initializer(shape=[self.num_image_feature, 1]), name='Bp', dtype=tf.float32)
+
+        # users visual factors UxF
         self.Tu = tf.Variable(
             self.initializer(shape=[self._num_users, self._factors_d]),
             name='Tu', dtype=tf.float32)
+
+        # embedding matrix DxF
         self.E = tf.Variable(
             self.initializer(shape=[self.num_image_feature, self._factors_d]),
             name='E', dtype=tf.float32)
@@ -56,10 +62,12 @@ class VBPRModel(keras.Model):
     def call(self, inputs, training=None):
         user, item, feature_i = inputs
         beta_i = tf.squeeze(tf.nn.embedding_lookup(self.Bi, item))
+        gamma_i = tf.squeeze(tf.nn.embedding_lookup(self.Gi, item))
         gamma_u = tf.squeeze(tf.nn.embedding_lookup(self.Gu, user))
         theta_u = tf.squeeze(tf.nn.embedding_lookup(self.Tu, user))
-        gamma_i = tf.squeeze(tf.nn.embedding_lookup(self.Gi, item))
 
+        # eq. (4)
+        # \hat(x_{u,i}) = \beta_i + \gamma_u^T \gamma_i + \theta_u^T ( E f_i ) + \beta' f_i
         xui = beta_i + tf.reduce_sum((gamma_u * gamma_i), axis=1) + \
               tf.reduce_sum((theta_u * tf.matmul(feature_i, self.E)), axis=1) + \
               tf.squeeze(tf.matmul(feature_i, self.Bp))
