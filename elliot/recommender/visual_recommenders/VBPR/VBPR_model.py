@@ -76,13 +76,21 @@ class VBPRModel(keras.Model):
 
     @tf.function
     def train_step(self, batch):
+        # data from the batch
+        # pos and neg could be more than one
         user, pos, feature_pos, neg, feature_neg = batch
         with tf.GradientTape() as t:
+
             xu_pos, gamma_u, gamma_pos, _, theta_u, beta_pos = \
                 self(inputs=(user, pos, feature_pos), training=True)
+
             xu_neg, _, gamma_neg, _, _, beta_neg = self(inputs=(user, neg, feature_neg), training=True)
 
+            # eq. (7) - relationship between positive and negative item for user u
+            # -80 min value, 1e8 max value
+            # \hat{x}_uij
             result = tf.clip_by_value(xu_pos - xu_neg, -80.0, 1e8)
+            # loss = \SUM{ln(e^{-results} + 1)}
             loss = tf.reduce_sum(tf.nn.softplus(-result))
 
             # Regularization Component
