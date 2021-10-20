@@ -1,0 +1,31 @@
+[
+    {
+        "default_validation_metric": "HR",
+        "default_validation_cutoff": 20,
+        "rel_threshold": 1
+    },
+    {
+        "meta": {
+            "hyper_opt_alg": "grid",
+            "validation_rate": 10,
+            "verbose": true,
+            "save_weights": true,
+            "save_recs": true,
+            "validation_metric": "HR@100",
+            "restore": false
+        },
+        "recommender": "VBPR_seed=42_e=100_bs=128_be=128_factors=128_factors_d=20_lr=0$0005_l_w=2$5e-05_l_b=0_l_e=0$002_load=VisualAttributes",
+        "configuration": {
+            "lr": 0.0005,
+            "epochs": 100,
+            "factors": 128,
+            "factors_d": 20,
+            "batch_size": 128,
+            "batch_eval": 128,
+            "l_w": 2.5e-05,
+            "l_b": 0,
+            "name": "VBPR_seed=42_e=100_bs=128_be=128_factors=128_factors_d=20_lr=0$0005_l_w=2$5e-05_l_b=0_l_e=0$002_load=VisualAttributes",
+            "best_iteration": 30
+        }
+    }
+]

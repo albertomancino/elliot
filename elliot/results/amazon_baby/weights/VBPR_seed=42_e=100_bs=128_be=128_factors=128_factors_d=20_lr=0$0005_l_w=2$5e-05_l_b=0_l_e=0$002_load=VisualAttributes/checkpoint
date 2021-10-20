@@ -1,0 +1,2 @@
+model_checkpoint_path: "best-weights-VBPR_seed=42_e=100_bs=128_be=128_factors=128_factors_d=20_lr=0$0005_l_w=2$5e-05_l_b=0_l_e=0$002_load=VisualAttributes"
+all_model_checkpoint_paths: "best-weights-VBPR_seed=42_e=100_bs=128_be=128_factors=128_factors_d=20_lr=0$0005_l_w=2$5e-05_l_b=0_l_e=0$002_load=VisualAttributes"
