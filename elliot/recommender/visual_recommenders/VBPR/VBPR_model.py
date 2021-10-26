@@ -7,8 +7,10 @@ __version__ = '0.3.1'
 __author__ = 'Vito Walter Anelli, Claudio Pomo, Daniele Malitesta'
 __email__ = 'vitowalter.anelli@poliba.it, claudio.pomo@poliba.it, daniele.malitesta@poliba.it'
 
+import os.path
 import tensorflow as tf
 import numpy as np
+import json
 from tensorflow import keras
 
 
@@ -80,7 +82,6 @@ class VBPRModel(keras.Model):
         # pos and neg could be more than one
         user, pos, feature_pos, neg, feature_neg = batch
         with tf.GradientTape() as t:
-
             xu_pos, gamma_u, gamma_pos, _, theta_u, beta_pos = \
                 self(inputs=(user, pos, feature_pos), training=True)
 
@@ -129,3 +130,19 @@ class VBPRModel(keras.Model):
     @tf.function
     def get_top_k(self, preds, train_mask, k=100):
         return tf.nn.top_k(tf.where(train_mask, preds, -np.inf), k=k, sorted=True)
+
+    def store_parameters(self, directory_path):
+        parameters = {
+            'factors': self._factors,
+            'factors_d': self._factors_d,
+            'learning_rate': self._learning_rate,
+            'l_w': self.l_w,
+            'l_b': self.l_b,
+            'l_e': self.l_e,
+            'num_image_feature': self.num_image_feature,
+            'num_users': self._num_users,
+            'num_items': self._num_items
+        }
+
+        with open(os.path.join(directory_path, 'model_params.json'), 'w') as fp:
+            json.dump(parameters, fp, indent=4)

@@ -7,6 +7,8 @@ __version__ = '0.3.1'
 __author__ = 'Vito Walter Anelli, Claudio Pomo, Daniele Malitesta, Felice Antonio Merra'
 __email__ = 'vitowalter.anelli@poliba.it, claudio.pomo@poliba.it, daniele.malitesta@poliba.it, felice.merra@poliba.it'
 
+import os.path
+
 from tqdm import tqdm
 
 import tensorflow as tf
@@ -98,6 +100,11 @@ class VBPR(RecMixin, BaseRecommenderModel):
 
         # only for evaluation purposes
         self._next_eval_batch = self._sampler.pipeline_eval(self._batch_eval)
+
+        print('***********************************************')
+        print(self._config.path_output_rec_weight, self.name)
+        self._model.store_parameters(os.path.join(self._config.path_output_rec_weight, self.name))
+
 
     @property
     def name(self):

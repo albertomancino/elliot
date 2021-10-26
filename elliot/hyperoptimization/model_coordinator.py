@@ -7,6 +7,7 @@ __version__ = '0.3.1'
 __author__ = 'Vito Walter Anelli, Claudio Pomo'
 __email__ = 'vitowalter.anelli@poliba.it, claudio.pomo@poliba.it'
 
+import os
 from types import SimpleNamespace
 import typing as t
 import numpy as np
@@ -98,6 +99,14 @@ class ModelCoordinator(object):
             self.logger.info(f"Exploration: Test Fold exploration number {self.test_fold_index+1}")
             self.logger.info(f"Exploration: Train-Validation Fold exploration number {trainval_index+1}")
             model = self.model_class(data=data_obj, config=self.base, params=self.params)
+            #TODO
+            print('*********************************************')
+            print(model._saving_filepath)
+            print(os.path.exists(model._saving_filepath))
+
+            #model._model.store_parameters(model._saving_filepath)
+            print()
+
             model.train()
             losses.append(model.get_loss())
             results.append(model.get_results())
